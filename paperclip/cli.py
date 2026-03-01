@@ -107,13 +107,14 @@ def _cmd_authenticate(provider_token: str) -> None:
         console.print(f"  Device ID   : [bold]{result['device_id']}[/bold]")
         console.print(f"  Device name : {device_name}")
         console.print(f"  GPU         : {gpu_model or 'unknown'}")
-        console.print(f"\n[dim]Config saved to ~/.paperclip/config.json[/dim]")
-        console.print(f"\nNext step — set your GPU allocation:")
-        console.print(f"  [bold]paperclip --allocate 70[/bold]")
+        console.print(f"\n[dim]Config saved to ~/.paperclip/config.json[/dim]\n")
 
     except Exception as e:
         console.print(f"[red]✗[/red] Authentication failed: {e}")
         sys.exit(1)
+
+    # Start the daemon immediately after authenticating
+    _cmd_daemon()
 
 
 def _cmd_allocate(pct: int) -> None:
@@ -125,8 +126,6 @@ def _cmd_allocate(pct: int) -> None:
         console.print(f"[green]✓[/green] GPU allocation set to [bold]{pct}%[/bold]")
         if pct == 0:
             console.print("  [dim]Job assignment is paused (0% allocation).[/dim]")
-        elif pct == 100:
-            console.print("  [dim]Full GPU available for rent.[/dim]")
     except Exception as e:
         console.print(f"[red]✗[/red] Failed to set allocation: {e}")
         sys.exit(1)
