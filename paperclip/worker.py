@@ -19,8 +19,21 @@ from paperclip import config
 logger = logging.getLogger(__name__)
 
 
+def _gpu_available() -> bool:
+    try:
+        import torch  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
 def run_job(job: dict, progress_callback: Callable[[int, str], None]) -> None:
-    if config.is_mock():
+    if config.is_mock() or not _gpu_available():
+        if not config.is_mock() and not _gpu_available():
+            logger.warning(
+                "GPU dependencies not installed — running in mock mode.\n"
+                "To enable real fine-tuning: pip install paperclip-daemon[gpu]"
+            )
         _run_mock(job, progress_callback)
     else:
         if job.get("dataset_type") == "tts":
