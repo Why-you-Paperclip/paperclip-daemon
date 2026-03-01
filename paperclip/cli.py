@@ -100,6 +100,7 @@ def _cmd_authenticate(provider_token: str) -> None:
             "device_id": str(result["device_id"]),
             "device_name": device_name,
             "gpu_model": gpu_model,
+            "api_url": config.api_url(),  # persist so --daemon doesn't fall back to localhost
         })
 
         console.print("[green]✓[/green] Device authenticated successfully")
